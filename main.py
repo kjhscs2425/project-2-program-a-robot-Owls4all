@@ -2,6 +2,7 @@
 from simulator import robot
 import time
 
+robot.motors(1,1,3.84)
 left, right = robot.sonars()
-robot.motors(1, 1, 2)
- 
+#3.84 is not too much
+#3.85 is too much
