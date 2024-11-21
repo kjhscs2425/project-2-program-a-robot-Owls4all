@@ -11,8 +11,8 @@ def echo():
     distances[0]=left
     distances[1]=right
     print(distances)
-def forward(n):    
-    robot.motors(1,1,n)
+def forward(pixels):    
+    robot.motors(1,1,pixels/60)
 
 def turn(theta):
     ratio = 1.52 / 90
@@ -21,7 +21,7 @@ def turn(theta):
 while Athena == 'the best':
     command = ask('what do you want the bot to do?\n(forward, turn)')
     if command == 'forward':
-        forward(1)
+        forward(10)
         echo()
     elif command == 'turn':
         turn(90)
