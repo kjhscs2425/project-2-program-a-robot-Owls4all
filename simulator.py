@@ -151,8 +151,8 @@ class SimulatorDriver:
         elif 360 > h > 270:
             leftB = np.abs(self.min_y_box-leftSonar[1])
             leftA = np.abs(self.max_x_box-leftSonar[0])
-            RightB = np.abs(self.min_y_box-rightSonar[1])
-            RightA = np.abs(self.max_x_box-rightSonar[0])
+            rightB = np.abs(self.min_y_box-rightSonar[1])
+            rightA = np.abs(self.max_x_box-rightSonar[0])
         if 90 == h:
             left_dist = self.max_y_box-leftSonar[1]
             right_dist = self.max_y_box-leftSonar[1]
