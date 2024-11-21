@@ -127,9 +127,47 @@ class SimulatorDriver:
     
     def sonars(self):
         # figure out distance from left sonar to box wall
-        left_dist = None
-        # figure out distance from right sonar to box wall
-        right_dist = None
+        h = self.heading
+        potato_angle = 90-h
+        cornersX,cornersY,=self.find_corners(self.x,self.y,self.heading)
+        leftSonar = (cornersX[1]+3*np.cos(potato_angle),cornersY[1]-np.sin(potato_angle))
+        rightSonar = (cornersX[0]-3*np.cos(potato_angle),cornersY[0]+np.sin(potato_angle))
+
+        if 90 > h > 0:
+            leftA = np.abs(self.max_y_box-leftSonar[1])
+            leftB = np.abs(self.max_x_box-leftSonar[0])
+            rightA = np.abs(self.max_y_box-rightSonar[1])
+            rightB = np.abs(self.max_x_box-rightSonar[0])
+        elif 180 > h > 90:
+            leftB = np.abs(self.max_y_box-leftSonar[1])
+            leftA = np.abs(self.min_x_box-leftSonar[0])
+            rightB = np.abs(self.max_y_box-rightSonar[1])
+            rightA = np.abs(self.min_x_box-rightSonar[0])
+        elif 270 > h > 180:
+            leftA = np.abs(self.min_y_box-leftSonar[1])
+            leftB = np.abs(self.min_x_box-leftSonar[0])
+            rightA = np.abs(self.min_y_box-rightSonar[1])
+            rightB = np.abs(self.min_x_box-rightSonar[0])
+        elif 360 > h > 270:
+            leftB = np.abs(self.min_y_box-leftSonar[1])
+            leftA = np.abs(self.max_x_box-leftSonar[0])
+            RightB = np.abs(self.min_y_box-rightSonar[1])
+            RightA = np.abs(self.max_x_box-rightSonar[0])
+        if 90 == h:
+            left_dist = self.max_y_box-leftSonar[1]
+            right_dist = self.max_y_box-leftSonar[1]
+        elif 180 == h:
+            left_dist = np.abs(self.min_x_box-leftSonar[0])
+            right_dist = np.abs(self.min_x_box_box-leftSonar[0])
+        elif 270 == h:
+            left_dist = np.abs(self.min_y_box-leftSonar[1])
+            right_dist = np.abs(self.min_y_box-leftSonar[1])
+        elif 0 == h:
+            left_dist = np.abs(self.max_x_box-leftSonar[0])
+            right_dist = np.abs(self.max_x_box-leftSonar[0])
+        else:
+            left_dist = min(np.abs(leftA*np.cos(h)),np.abs(leftB*np.sin(h)))
+            right_dist = min(np.abs(rightA*np.cos(h)),np.abs(rightB*np.sin(h)))
         return left_dist, right_dist
 
     def render(self):
