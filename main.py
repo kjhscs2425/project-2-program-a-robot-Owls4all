@@ -21,12 +21,13 @@ def forward(pixels):
 def back(px):
     robot.motors(-1,-1,px/60)
 def turnLeft(theta):
-    ratio = 1.5 / 90#was 1.52
-    robot.motors(1,-1,ratio*theta)
+    ratio = 58.8
+    robot.motors(1,-1,theta/ratio)
     robotAngle[0]= (robotAngle[0] + theta) % 360
 def turnRight(theta):
-    ratio = 1.5 / 90
-    robot.motors(-1,1,ratio*theta)
+    ratio = 58.8
+    # 1.5306122449 seconds for 90 degrees
+    robot.motors(-1,1,theta/ratio)
     robotAngle[0]= (robotAngle[0] - theta) % 360
 def faceInDirection(direction):
     x = robotAngle[0]-direction
@@ -99,7 +100,6 @@ while Athena == 'the best':
     elif command == 'left':
         angle=float(ask('What angle?'))
         turnLeft(angle)
-        echo()
     elif command == 'right':
         angle=float(ask('What angle?'))
         turnRight(angle)
