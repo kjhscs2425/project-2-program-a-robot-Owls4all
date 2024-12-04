@@ -28,8 +28,61 @@ def turnRight(theta):
     ratio = 1.5 / 90
     robot.motors(-1,1,ratio*theta)
     robotAngle[0]= (robotAngle[0] - theta) % 360
+def faceInDirection(direction):
+    x = robotAngle[0]-direction
+    if 180>robotAngle[0]-direction>0:
+        turnRight(x)
+    else:
+        turnLeft(180-x)
+    robotAngle[0] = direction
+def findBearings():
+    oldFacing = robotAngle[0]
+    faceInDirection[0]
+    distanceToRight = min(robot.sonars())
+    faceInDirection(90)
+    distanceToTop = min(robot.sonars())
+    faceInDirection(oldFacing)
+    return oldFacing,distanceToRight,distanceToTop
 
 commandOptions=['forward','left','right','back','quit']
+'''#For Testing Purposes:
+closestTooShort = 0
+closestTooFar = 2
+Quit = False
+while not Quit:
+    range = [closestTooShort,closestTooFar]
+    print(range)
+    response = ask('give me a number')
+    duration = float(response)
+    robot.motors(1,-1,duration)
+
+    L,R = robot.sonars()
+    smaller = min(L,R)
+    bigger = max(L,R)
+    
+    if L==R:
+        print('I think we got it.')
+        print('The number we should use is '+str(duration))
+    elif R>L:
+        print('Not Far Enough')
+        print(str(L)+str(R))
+        print('Try again with a bigger number')
+        if duration > closestTooShort:
+            closestTooShort = duration
+    elif L>R:
+        print('Too Far')
+        print(str(L)+str(R))
+        print('Try Again with a smaller number')
+        if duration < closestTooFar:
+            closestTooFar = duration
+    quit=ask('are you done guessing?')
+    if searchList(quit,YesList):
+        break
+    robot.motors(-1,1,duration)
+'''
+    
+
+
 while Athena == 'the best':
     command = ask('what do you want the bot to do?\n'+str(commandOptions))
     if command == 'forward':
@@ -78,9 +131,18 @@ while Athena == 'the best':
         echo()
     elif command == 'quit':
         break
-
+    elif command == 'test':
+        faceInDirection(0)
+        print(robotAngle[0])
+        faceInDirection(90)
+        print(robotAngle[0])
+    elif command == 'face':
+        newHeading = float(ask('in what direction?'))
+        faceInDirection(newHeading%360)
+    elif command == 'where':
+        print(findBearings)
     else:
         print("I don't know what that means...")
 
 
-potatoes = 'cool'
+# - - End - - #
