@@ -7,7 +7,14 @@ robotAngle = [0]
 left, right = robot.sonars()
 distances=[left,right]
 print(distances)
-
+defaultSteps = []
+defaultValues = []
+dance1Steps = []
+dance1Values = []
+dance2Steps = []
+dance2Values = []
+dance3Steps = []
+dance3Values = []
 boxWidth = 660
 boxHeight = 410
 def space():
@@ -38,17 +45,62 @@ def faceInDirection(direction):
         turnLeft(180-x)
     robotAngle[0] = direction
 def findBearings():
+    
     oldFacing = robotAngle[0]
-    faceInDirection[0]
+    faceInDirection(0)
     distanceToRight = min(robot.sonars())
     faceInDirection(90)
     distanceToTop = min(robot.sonars())
     faceInDirection(oldFacing)
     return oldFacing,distanceToRight,distanceToTop
+danceCommands = ['write','run','step','add','delete']
+def doAThing(thing,value):
+    if thing == 'forward':
+        forward(value)
+    if thing == 'back':
+        back(value)
+    if thing == 'left':
+        turnLeft(value)
+    if thing == 'right':
+        turnRight(value)
+    if thing == 'face':
+        faceInDirection(value)
 
+def dance(whichOne,startPoint=0):
+    progress = startPoint
+    if whichOne == 'default':
+        while progress < len(defaultSteps):
+            doAThing(defaultSteps[progress],defaultValues[progress])
+            progress +=1
+    elif whichOne == '1':
+        while progress < len(defaultSteps):
+            doAThing(dance1Steps[progress],dance1Values[progress])
+            progress +=1
+    elif whichOne == '2':
+        while progress < len(defaultSteps):
+            doAThing(dance2Steps[progress],dance2Values[progress])
+            progress +=1
+    elif whichOne == '3':
+        while progress < len(defaultSteps):
+            doAThing(dance2Steps[progress],dance2Values[progress])
+            progress +=1
+stepsIn = 0
+def writeDance(saveSlot):
+    mode = ask('what do you want to do?\n'+str(danceCommands))
+    if mode == 'run':
+        dance(saveSlot,stepsIn)
+    if mode == 'step':
+        if saveSlot == '1':
+            doAThing(dance1Steps[stepsIn],dance1Values[stepsIn])
+        if saveSlot == '2':
+            doAThing(dance2Steps[stepsIn],dance2Values[stepsIn])
+        if saveSlot == '3':
+            doAThing(dance3Steps[stepsIn],dance3Values[stepsIn])
+        stepsIn +=1
+            
 commandsBasic=['forward','left','right','back','help','quit']
 commandsAdvanced=['face','where','echo','center']
-commandsSecret = ['dance']
+commandsSecret = ['dance','bounce','choreograph']
 helpMenu = '''
 ===============================================================
 Basic commands:                                          
@@ -73,7 +125,9 @@ Advanced commands:
 Other commands:
     secret - displays the list of hidden commands.
     dance - the robot returns to center and then performs a choreographed dance.
-    bounce - the robot goes forward until it is close to the wall, then backward a slightly smaller distance, until it goes less than 10 pixels.
+    bounce - the robot goes forward until it is close to the wall,
+        then backward a slightly smaller distance, 
+        repeating until it goes less than 10 pixels.
 ===============================================================
 '''
 while Athena == 'the best':
@@ -98,6 +152,13 @@ while Athena == 'the best':
         angle=float(ask('What angle?'))
         turnRight(angle)
     elif command == 'dance':
+        chosenOne=ask('which dance?\n[default, 1, 2, 3]')
+        if not searchList(chosenOne,['default','1','2','3']):
+           print("That's not an option!")
+        else:
+           dance(chosenOne)
+           
+    elif command == 'bounce':
         print("I haven't prepared this yet")
     elif command == 'center':
         faceInDirection(0)
