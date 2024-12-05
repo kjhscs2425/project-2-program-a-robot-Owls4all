@@ -292,7 +292,7 @@ class SimulatorDriver:
         pygame.display.set_caption("Robot Simulator")
         self.render()
 
-mode = input("Do you want to run the real robot (r) or the simulator (s)?")
+mode = 's'#input("Do you want to run the real robot (r) or the simulator (s)?")
 if mode == "r":
     from robot import RealRobotDriver
     robot = Robot(use_simulator=False)
