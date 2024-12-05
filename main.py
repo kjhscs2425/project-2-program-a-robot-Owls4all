@@ -2,11 +2,13 @@
 from simulator import robot
 from utility import *
 import time
+
 Athena = 'the best'
 robotAngle = [0]
+
 left, right = robot.sonars()
 distances=[left,right]
-print(distances)
+
 defaultSteps = []
 defaultValues = []
 dance1Steps = []
@@ -15,8 +17,10 @@ dance2Steps = []
 dance2Values = []
 dance3Steps = []
 dance3Values = []
+
 boxWidth = 660
 boxHeight = 410
+
 def space():
     return min(robot.sonars())
 def echo():
@@ -24,10 +28,12 @@ def echo():
     distances[0]=left
     distances[1]=right
     print(distances)
+
 def forward(pixels):    
     robot.motors(1,1,pixels/60)
 def back(px):
     robot.motors(-1,-1,px/60)
+
 def turnLeft(theta):
     ratio = 58.8
     robot.motors(1,-1,theta/ratio)
@@ -37,6 +43,7 @@ def turnRight(theta):
     # 1.5306122449 seconds for 90 degrees
     robot.motors(-1,1,theta/ratio)
     robotAngle[0]= (robotAngle[0] - theta) % 360
+
 def faceInDirection(direction):
     x = robotAngle[0]-direction
     if 180>robotAngle[0]-direction>0:
@@ -53,7 +60,9 @@ def findBearings():
     distanceToTop = min(robot.sonars())
     faceInDirection(oldFacing)
     return oldFacing,distanceToRight,distanceToTop
+
 danceCommands = ['write','run','step','add','delete','done']
+
 def doAThing(thing,value):
     if thing == 'forward':
         forward(value)
@@ -83,10 +92,12 @@ def dance(whichOne,startPoint=0):
         while progress < len(defaultSteps):
             doAThing(dance2Steps[progress],dance2Values[progress])
             progress +=1
+
 stepsIn = 0
 allDances=['default','1','2','3']
 allSteps=[defaultSteps,dance1Steps,dance2Steps,dance3Steps]
 allValues=[defaultValues,dance1Values,dance2Values,dance3Values]
+
 def writeDance(saveSlot):
     mode = ask('what do you want to do?\n'+str(danceCommands))
     if mode == 'run':
@@ -110,6 +121,7 @@ def writeDance(saveSlot):
     if mode == 'done':
         return
     writeDance(saveSlot)
+
 commandsBasic=['forward','left','right','back','help','quit']
 commandsAdvanced=['face','where','echo','center']
 commandsSecret = ['dance','bounce','choreograph']
@@ -143,6 +155,7 @@ Other commands:
         repeating until it goes less than 10 pixels.
 ===============================================================
 '''
+
 while Athena == 'the best':
     command = ask('what do you want the bot to do?\n'+str(commandsBasic)+'\n'+str(commandsAdvanced))
     if command == 'help':
