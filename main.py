@@ -100,11 +100,8 @@ def writeDance(saveSlot):
             doAThing(dance3Steps[stepsIn],dance3Values[stepsIn])
         stepsIn +=1
     if mode == 'add':
-        if not stepsIn < len(allSteps[indexInList(saveSlot,allDances)]):
-            allSteps[indexInList(saveSlot,allDances)].append(ask('What step do you want to add here'))
-            allValues[indexInList(saveSlot,allDances)].append(float(ask('What value should go with that?')))
-        else:
-           pass #do it in utility
+        insert(ask('what to add?'),stepsIn,allSteps[indexInList(saveSlot,allDances)])
+        insert(ask('number that goes with it?\n(if it doesn\'t need one just put whatever number)'),stepsIn,allValues[indexInList(saveSlot,allDances)])
     if mode == 'delete':
         allSteps[indexInList(saveSlot,allDances)].__delitem__(stepsIn)
         allValues[indexInList(saveSlot,allDances)].__delitem__(stepsIn)
