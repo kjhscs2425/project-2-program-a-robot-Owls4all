@@ -10,7 +10,8 @@ print(distances)
 
 boxWidth = 660
 boxHeight = 410
-
+def space():
+    return min(robot.sonars())
 def echo():
     left,right=robot.sonars()
     distances[0]=left
@@ -45,16 +46,45 @@ def findBearings():
     faceInDirection(oldFacing)
     return oldFacing,distanceToRight,distanceToTop
 
-commandOptions=['forward','left','right','back','face','where','quit']
-
-
+commandsBasic=['forward','left','right','back','help','quit']
+commandsAdvanced=['face','where','echo','center']
+commandsSecret = ['dance']
+helpMenu = '''
+===============================================================
+Basic commands:                                          
+    forward - move the robot forward.
+        requires input - how far. (units in pixels.)
+    back - move the robot backward.
+        requires input - how far. (units in pixels.)
+    left - turn the robot counterclockwise.
+        requires input - what angle. (units in degrees.)
+    right - turn the robot clockwise.
+        requires input - what angle. (units in degrees.)
+    help - brings up this information
+    quit - terminates the program.
+Advanced commands:
+    face - points the robot in a given direction.
+        requires input - direction.
+    where - returns the robot's position.
+        gives output: [angle, distanceToRight, distanceToTop]
+    echo - returns sonar readings.
+        gives output: [leftSonar,rightSonar]
+    center - returns the robot to the center of the screen.
+Other commands:
+    secret - displays the list of hidden commands.
+    dance - the robot returns to center and then performs a choreographed dance.
+    bounce - the robot goes forward until it is close to the wall, then backward a slightly smaller distance, until it goes less than 10 pixels.
+===============================================================
+'''
 while Athena == 'the best':
-    command = ask('what do you want the bot to do?\n'+str(commandOptions))
-    if command == 'forward':
+    command = ask('what do you want the bot to do?\n'+str(commandsBasic)+'\n'+str(commandsAdvanced))
+    if command == 'help':
+        print(helpMenu)
+    elif command == 'forward':
         distance = 10000
-        while distance >= min(distances):
+        while distance >= space():
             distance = float(ask('How far?'))
-            if distance >= min(distances):
+            if distance >= space():
                 print("That's too far! the robot will hit the edge!")
         forward(distance)
         echo()
@@ -70,15 +100,7 @@ while Athena == 'the best':
     elif command == 'dance':
         print("I haven't prepared this yet")
     elif command == 'center':
-        if 180 >= robotAngle[0] > 0:
-            turnRight(robotAngle[0])
-        elif 180 < robotAngle[0] < 360:
-            turnLeft(robotAngle[0]-180)
-        elif robotAngle[0] == 0:
-            pass #(Already at correct angle)
-        else:
-            print('oh ****')
-            break
+        faceInDirection(0)
         echo()
         if distances[0] != distances[1]:
             pass #The angle is not actually zero
@@ -99,9 +121,11 @@ while Athena == 'the best':
         newHeading = float(ask('in what direction?'))
         faceInDirection(newHeading%360)
     elif command == 'where':
-        print(findBearings)
+        print(findBearings())
+    elif command == 'secret':
+        print("The secret commands are:\n"+str(commandsSecret))
     else:
-        print("I don't know what that means...")
+        print("I don't know what that means... \n try 'help' for a list of commands.")
 
 
 # - - End - - #
