@@ -62,7 +62,17 @@ def findBearings():
     return oldFacing,distanceToRight,distanceToTop
 
 danceCommands = ['write','run','step','add','delete','done']
-
+def center():
+        faceInDirection(0)
+        left,right=robot.sonars()
+        distances[0]=left
+        distances[1]=right
+        if distances[0] != distances[1]:
+            pass #The angle is not actually zero
+        if distances[0] >260:
+            forward(distances[0]-260)
+        elif distances[0] <260:
+            back(260-distances[0])    
 def doAThing(thing,value):
     if thing == 'forward':
         forward(value)
@@ -74,6 +84,9 @@ def doAThing(thing,value):
         turnRight(value)
     if thing == 'face':
         faceInDirection(value)
+    if thing == 'center':
+        center()
+
 def dance(whichOne,startPoint=0):
     progress = startPoint
     if whichOne == 'default':
@@ -182,8 +195,7 @@ while Athena == 'the best':
         if not searchList(chosenOne,['default','1','2','3']):
            print("That's not an option!")
         else:
-           dance(chosenOne)
-           
+           dance(chosenOne)      
     elif command == 'bounce':
         print("I haven't prepared this yet")
     elif command == 'center':
