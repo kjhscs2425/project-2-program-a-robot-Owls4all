@@ -91,6 +91,7 @@ def writeDance(saveSlot):
     mode = ask('what do you want to do?\n'+str(danceCommands))
     if mode == 'run':
         dance(saveSlot,stepsIn)
+        stepsIn = len(allSteps[indexInList(saveSlot,allDances)])
     if mode == 'step':
         if saveSlot == '1':
             doAThing(dance1Steps[stepsIn],dance1Values[stepsIn])
