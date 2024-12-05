@@ -45,11 +45,11 @@ def turnRight(theta):
     robotAngle[0]= (robotAngle[0] - theta) % 360
 
 def faceInDirection(direction):
-    x = robotAngle[0]-direction
-    if 180>robotAngle[0]-direction>0:
-        turnRight(x)
+    x = robotAngle[0]
+    if 180+direction>x>direction:
+        turnRight(x-direction)
     else:
-        turnLeft(180-x)
+        turnLeft(180-(direction-x))
     robotAngle[0] = direction
 def findBearings():
     
@@ -61,9 +61,22 @@ def findBearings():
     faceInDirection(oldFacing)
     return oldFacing,distanceToRight,distanceToTop
 
-danceCommands = ['write','run','step','add','delete','done']
+danceCommands = ['run','step','add','delete','done']
+
 def center():
+    #--------------vertical------------------#
+        faceInDirection(90)
+        left,right=robot.sonars()
+        distances[0]=left
+        distances[1]=right
+        if distances[0] >110.27169461830995:
+            forward(distances[0]-110.27169461830995)
+        elif distances[0] <110.27169461830995:
+            back(110.27169461830995-distances[0])  
+    #-------------horizontal-----------------#
+        ask("The bot thinks it's facing up. Is it?")
         faceInDirection(0)
+        ask("The bot thinks it's facing right. Is it?")
         left,right=robot.sonars()
         distances[0]=left
         distances[1]=right
@@ -106,7 +119,7 @@ def dance(whichOne,startPoint=0):
             doAThing(dance2Steps[progress],dance2Values[progress])
             progress +=1
 
-stepsIn = 0
+stepsIn = [0]
 allDances=['default','1','2','3']
 allSteps=[defaultSteps,dance1Steps,dance2Steps,dance3Steps]
 allValues=[defaultValues,dance1Values,dance2Values,dance3Values]
@@ -114,23 +127,23 @@ allValues=[defaultValues,dance1Values,dance2Values,dance3Values]
 def writeDance(saveSlot):
     mode = ask('what do you want to do?\n'+str(danceCommands))
     if mode == 'run':
-        dance(saveSlot,stepsIn)
-        stepsIn = len(allSteps[indexInList(saveSlot,allDances)])
+        dance(saveSlot,stepsIn[0])
+        stepsIn[0] = len(allSteps[indexInList(saveSlot,allDances)])
     if mode == 'step':
         if saveSlot == '1':
-            doAThing(dance1Steps[stepsIn],dance1Values[stepsIn])
+            doAThing(dance1Steps[stepsIn[0]],dance1Values[stepsIn[0]])
         if saveSlot == '2':
-            doAThing(dance2Steps[stepsIn],dance2Values[stepsIn])
+            doAThing(dance2Steps[stepsIn[0]],dance2Values[stepsIn[0]])
         if saveSlot == '3':
-            doAThing(dance3Steps[stepsIn],dance3Values[stepsIn])
-        stepsIn +=1
+            doAThing(dance3Steps[stepsIn[0]],dance3Values[stepsIn[0]])
+        stepsIn[0] +=1
     if mode == 'add':
-        insert(ask('what to add?'),stepsIn,allSteps[indexInList(saveSlot,allDances)])
-        insert(ask('number that goes with it?\n(if it doesn\'t need one just put whatever number)'),stepsIn,allValues[indexInList(saveSlot,allDances)])
-        stepsIn +=1
+        insert(ask('what to add?'),stepsIn[0],allSteps[indexInList(saveSlot,allDances)])
+        insert(ask('number that goes with it?\n(if it doesn\'t need one just put whatever number)'),stepsIn[0],allValues[indexInList(saveSlot,allDances)])
+        stepsIn[0] +=1
     if mode == 'delete':
-        allSteps[indexInList(saveSlot,allDances)].__delitem__(stepsIn)
-        allValues[indexInList(saveSlot,allDances)].__delitem__(stepsIn)
+        allSteps[indexInList(saveSlot,allDances)].__delitem__(stepsIn[0])
+        allValues[indexInList(saveSlot,allDances)].__delitem__(stepsIn[0])
     if mode == 'done':
         return
     writeDance(saveSlot)
@@ -200,6 +213,9 @@ while Athena == 'the best':
         print("I haven't prepared this yet")
     elif command == 'center':
         center()
+    elif command == 'choreograph':
+        stepsIn[0]=0
+        writeDance(ask('Which save slot?\n[1, 2, 3]'))
     elif command == 'echo':
         echo()
     elif command == 'quit':
