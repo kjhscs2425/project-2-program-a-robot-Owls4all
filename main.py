@@ -102,6 +102,7 @@ def writeDance(saveSlot):
     if mode == 'add':
         insert(ask('what to add?'),stepsIn,allSteps[indexInList(saveSlot,allDances)])
         insert(ask('number that goes with it?\n(if it doesn\'t need one just put whatever number)'),stepsIn,allValues[indexInList(saveSlot,allDances)])
+        stepsIn +=1
     if mode == 'delete':
         allSteps[indexInList(saveSlot,allDances)].__delitem__(stepsIn)
         allValues[indexInList(saveSlot,allDances)].__delitem__(stepsIn)
