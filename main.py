@@ -53,7 +53,7 @@ def findBearings():
     distanceToTop = min(robot.sonars())
     faceInDirection(oldFacing)
     return oldFacing,distanceToRight,distanceToTop
-danceCommands = ['write','run','step','add','delete']
+danceCommands = ['write','run','step','add','delete','done']
 def doAThing(thing,value):
     if thing == 'forward':
         forward(value)
@@ -65,7 +65,6 @@ def doAThing(thing,value):
         turnRight(value)
     if thing == 'face':
         faceInDirection(value)
-
 def dance(whichOne,startPoint=0):
     progress = startPoint
     if whichOne == 'default':
@@ -85,6 +84,9 @@ def dance(whichOne,startPoint=0):
             doAThing(dance2Steps[progress],dance2Values[progress])
             progress +=1
 stepsIn = 0
+allDances=['default','1','2','3']
+allSteps=[defaultSteps,dance1Steps,dance2Steps,dance3Steps]
+allValues=[defaultValues,dance1Values,dance2Values,dance3Values]
 def writeDance(saveSlot):
     mode = ask('what do you want to do?\n'+str(danceCommands))
     if mode == 'run':
@@ -97,10 +99,22 @@ def writeDance(saveSlot):
         if saveSlot == '3':
             doAThing(dance3Steps[stepsIn],dance3Values[stepsIn])
         stepsIn +=1
-            
+    if mode == 'add':
+        if not stepsIn < len(allSteps[indexInList(saveSlot,allDances)]):
+            allSteps[indexInList(saveSlot,allDances)].append(ask('What step do you want to add here'))
+            allValues[indexInList(saveSlot,allDances)].append(float(ask('What value should go with that?')))
+        else:
+           pass #do it in utility
+    if mode == 'delete':
+        allSteps[indexInList(saveSlot,allDances)].__delitem__(stepsIn)
+        allValues[indexInList(saveSlot,allDances)].__delitem__(stepsIn)
+    if mode == 'done':
+        return
+    writeDance(saveSlot)
 commandsBasic=['forward','left','right','back','help','quit']
 commandsAdvanced=['face','where','echo','center']
 commandsSecret = ['dance','bounce','choreograph']
+
 helpMenu = '''
 ===============================================================
 Basic commands:                                          
