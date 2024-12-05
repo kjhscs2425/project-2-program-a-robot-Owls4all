@@ -199,19 +199,7 @@ while Athena == 'the best':
     elif command == 'bounce':
         print("I haven't prepared this yet")
     elif command == 'center':
-        faceInDirection(0)
-        echo()
-        if distances[0] != distances[1]:
-            pass #The angle is not actually zero
-        if distances[0] >260:
-            forward(distances[0]-260)
-        elif distances[0] <260:
-            back(260-distances[0])
-        elif distances[0] == 260:
-            pass #Already centered
-        else:
-            print('oh ****')
-            break
+        center()
     elif command == 'echo':
         echo()
     elif command == 'quit':
