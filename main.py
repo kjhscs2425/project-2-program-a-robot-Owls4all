@@ -9,8 +9,8 @@ robotAngle = [0]
 left, right = robot.sonars()
 distances=[left,right]
 
-defaultSteps = []
-defaultValues = []
+defaultSteps = ['center', 'forward', 'left', 'right', 'left', 'back']
+defaultValues = [0, 100, 45, 90, 45, 100]
 dance1Steps = []
 dance1Values = []
 dance2Steps = []
@@ -128,7 +128,7 @@ def writeDance(saveSlot):
     mode = ask('what do you want to do?\n'+str(danceCommands))
     if mode == 'run':
         dance(saveSlot,stepsIn[0])
-        stepsIn[0] = len(allSteps[indexInList(saveSlot,allDances)])
+        stepsIn[0] = len(allSteps[indexInList(saveSlot,allDances)])-1
     if mode == 'step':
         if saveSlot == '1':
             doAThing(dance1Steps[stepsIn[0]],dance1Values[stepsIn[0]])
@@ -139,7 +139,7 @@ def writeDance(saveSlot):
         stepsIn[0] +=1
     if mode == 'add':
         insert(ask('what to add?'),stepsIn[0],allSteps[indexInList(saveSlot,allDances)])
-        insert(ask('number that goes with it?\n(if it doesn\'t need one just put whatever number)'),stepsIn[0],allValues[indexInList(saveSlot,allDances)])
+        insert(float(ask('number that goes with it?\n(if it doesn\'t need one just put whatever number)')),stepsIn[0],allValues[indexInList(saveSlot,allDances)])
         stepsIn[0] +=1
     if mode == 'delete':
         allSteps[indexInList(saveSlot,allDances)].__delitem__(stepsIn[0]-1)
