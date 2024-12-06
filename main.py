@@ -23,6 +23,9 @@ boxHeight = 410
 
 def space():
     return min(robot.sonars())
+def backSpace():
+    #figure something out
+    return 7
 def echo():
     left,right=robot.sonars()
     distances[0]=left
@@ -30,7 +33,11 @@ def echo():
     print(distances)
 
 def forward(pixels):    
-    robot.motors(1,1,pixels/60)
+    if pixels > space()+5:
+        robot.motors(1,1,pixels/60)
+    else: 
+        forward(space-5)
+        print('Movement was cut short because the robot would have hit the wall.')
 def back(px):
     robot.motors(-1,-1,px/60)
 
@@ -76,7 +83,7 @@ def center():
     #-------------horizontal-----------------#
        # ask("The bot thinks it's facing up. Is it?")
         faceInDirection(0)
-       # ask("The bot thinks it's facing right. Is it?")
+       # ask("The bot thinks it's facing right. Is it?") #(these were used for debugging)
         left,right=robot.sonars()
         distances[0]=left
         distances[1]=right
