@@ -33,11 +33,12 @@ def echo():
     print(distances)
 
 def forward(pixels):    
-    if pixels > space()+5:
-        robot.motors(1,1,pixels/60)
+    if pixels > space()-5:
+        new_px = pixels
+        
     else: 
-        forward(space()-5)
-        print('Movement was cut short because the robot would have hit the wall.')
+        new_px = (space()-5)
+    robot.motors(1,1,pixels/60)  
 def back(px):
     robot.motors(-1,-1,px/60)
 
