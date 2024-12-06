@@ -9,8 +9,8 @@ robotAngle = [0]
 left, right = robot.sonars()
 distances=[left,right]
 
-defaultSteps = ['center', 'forward', 'left', 'right', 'left', 'back']
-defaultValues = [0, 100, 45, 90, 45, 100]
+defaultSteps = ['center', 'left', 'right', 'left', 'forward', 'back', 'forward', 'left', 'right', 'left', 'back', 'forward', 'back', 'right', 'left', 'right', 'back','forward','back', 'right', 'left', 'right', 'back', 'forward', 'back', 'right', 'left', 'right', 'forward', 'back', 'forward', 'left', 'right', 'left']
+defaultValues = [0.0, 180.0, 270.0, 90.0, 25.0, 50.0, 25.0, 45.0, 90.0, 45.0, 75.0, 100.0, 25.0, 45.0, 90.0, 45.0, 15 , 30, 15, 180.0, 270.0, 90.0, 25.0, 50.0, 25.0, 45.0, 90.0, 45.0, 75.0, 100.0, 25.0, 45.0, 90.0, 45.0]
 dance1Steps = []
 dance1Values = []
 dance2Steps = []
