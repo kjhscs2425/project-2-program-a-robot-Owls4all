@@ -61,7 +61,7 @@ def findBearings():
     faceInDirection(oldFacing)
     return oldFacing,distanceToRight,distanceToTop
 
-danceCommands = ['run','step','add','delete','print','done']
+danceCommands = ['run','step','add','delete','print','restart','done']
 
 def center():
     #--------------vertical------------------#
@@ -142,11 +142,15 @@ def writeDance(saveSlot):
         insert(ask('number that goes with it?\n(if it doesn\'t need one just put whatever number)'),stepsIn[0],allValues[indexInList(saveSlot,allDances)])
         stepsIn[0] +=1
     if mode == 'delete':
-        allSteps[indexInList(saveSlot,allDances)].__delitem__(stepsIn[0])
-        allValues[indexInList(saveSlot,allDances)].__delitem__(stepsIn[0])
+        allSteps[indexInList(saveSlot,allDances)].__delitem__(stepsIn[0]-1)
+        allValues[indexInList(saveSlot,allDances)].__delitem__(stepsIn[0]-1)
     if mode == 'print':
         print(allSteps[indexInList(saveSlot,allDances)])
         print(allValues[indexInList(saveSlot,allDances)])
+    if mode == 'restart':
+        stepsIn[0] = 0
+    if mode == 'undo':
+        stepsIn[0]-=1
     if mode == 'done':
         return
     writeDance(saveSlot)
