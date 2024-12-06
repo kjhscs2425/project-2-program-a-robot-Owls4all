@@ -74,9 +74,9 @@ def center():
         elif distances[0] <110.27169461830995:
             back(110.27169461830995-distances[0])  
     #-------------horizontal-----------------#
-        ask("The bot thinks it's facing up. Is it?")
+       # ask("The bot thinks it's facing up. Is it?")
         faceInDirection(0)
-        ask("The bot thinks it's facing right. Is it?")
+       # ask("The bot thinks it's facing right. Is it?")
         left,right=robot.sonars()
         distances[0]=left
         distances[1]=right
