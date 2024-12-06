@@ -36,7 +36,7 @@ def forward(pixels):
     if pixels > space()+5:
         robot.motors(1,1,pixels/60)
     else: 
-        forward(space-5)
+        forward(space()-5)
         print('Movement was cut short because the robot would have hit the wall.')
 def back(px):
     robot.motors(-1,-1,px/60)
