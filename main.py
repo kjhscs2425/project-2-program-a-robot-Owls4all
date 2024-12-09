@@ -38,7 +38,7 @@ def forward(pixels):
         
     else: 
         new_px = (space()-5)
-    robot.motors(1,1,pixels/60)  
+    robot.motors(1,1,new_px/60)  
 def back(px):
     robot.motors(-1,-1,px/60)
 
@@ -63,9 +63,9 @@ def findBearings():
     
     oldFacing = robotAngle[0]
     faceInDirection(0)
-    distanceToRight = min(robot.sonars())
+    distanceToRight = space()
     faceInDirection(90)
-    distanceToTop = min(robot.sonars())
+    distanceToTop = space()
     faceInDirection(oldFacing)
     return oldFacing,distanceToRight,distanceToTop
 
@@ -239,7 +239,8 @@ while Athena == 'the best':
         newHeading = float(ask('in what direction?'))
         faceInDirection(newHeading%360)
     elif command == 'where':
-        print(findBearings())
+        angle,distToRight,distToTop = findBearings()
+        print(f'The robot is facing {angle} degrees, is {distToRight} pixels from the right, and {distToTop} pixels from the top.')
     elif command == 'secret':
         print("The secret commands are:\n"+str(commandsSecret))
     else:

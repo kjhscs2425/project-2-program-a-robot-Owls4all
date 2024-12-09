@@ -7,15 +7,20 @@ To install all dependencies, type the following into the Terminal (if you're on 
 
 Project Requirements:
 * [√] robot moves
-* [ ] robot does not crash into the walls of the box
+* [√] robot does not crash into the walls of the box
 * [√] at least 5 calls to input
 * [√] at least 5 functions
+    (space, backSpace, echo, forward, backward, turnLeft, turnRight, faceInDirection, findBearings, center, doAThing, dance, writeDance)
 * [√] at least 2 functions have at least one parameter
+    (forward, back, etc.)
 * [√] at least 2 functions have return values and at least one call to the function is assigned to a variable
+    (space, findBearings)
 * [√] each motor moves at least once
-* [ ] the robot's movement changes based on at least 5 readings of the sonar sensors**** Wait for new code update to implement this part!!
+* [√] the robot's movement changes based on at least 5 readings of the sonar sensors**** Wait for new code update to implement this part!! (2 in center, 2 in findBearings, 1 in forward)
 * [√] use at least 1 while loop OR recursive function call
-* [√] at least one command (user input) causes the robot to move autonomously for at least 20 seconds
+    (I used one of each)
+* [√] at least one command (user input) causes the robot to move autonomously for at least 20 seconds 
+    (default dance)
 
 Dr. EB Todo:
 * [ ] implement sonar distance in simulator
