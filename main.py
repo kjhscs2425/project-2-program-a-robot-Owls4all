@@ -1,5 +1,6 @@
 # Import the robot control commands from the library
-from simulator import robot
+from simulator import *
+import numpy as np
 from utility import *
 import time
 
@@ -25,7 +26,27 @@ def space():
     return min(robot.sonars())
 def backSpace():
     #figure something out
-    return 7
+    Fr,Fl,Bl,Br = robot.driver.find_corners
+    v = Bl - Br
+    direction_vector = v / np.linalg.norm(v)
+    left_sonar_position = Br + direction_vector * 3
+    left_sonar_position = Point(left_sonar_position[0], left_sonar_position[1])
+    # print(f"{left_sonar_position=}")
+
+    v = Br - Bl
+    direction_vector = v / np.linalg.norm(v)
+    right_sonar_position = Bl + direction_vector * 3 
+    right_sonar_position = Point(right_sonar_position[0], right_sonar_position[1])
+        # print(f"{right_sonar_position=}")
+
+        # draw a line between the front corners
+        # sonar positions are 3cm in from the front corners
+
+        # figure out distance from left sonar to box wall
+    left_dist = robot.driver.dist_to_box(left_sonar_position, robot.driver.heading+180)
+        # figure out distance from right sonar to box wall
+    right_dist = robot.driver.dist_to_box(right_sonar_position, robot.driver.heading+180)    
+    return min(left_dist,right_dist)
 def echo():
     left,right=robot.sonars()
     distances[0]=left
