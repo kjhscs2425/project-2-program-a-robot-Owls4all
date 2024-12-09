@@ -25,20 +25,12 @@ boxHeight = 410
 def space():
     return min(robot.sonars())
 def backSpace(): #Credit to Dr. EB for this- I took most of the code for it from the simulator.
-    Fr,Fl,Bl,Br = robot.driver.find_corners
-    v = Bl - Br
-    direction_vector = v / np.linalg.norm(v)
-    left_sonar_position = Br + direction_vector * 3
-    left_sonar_position = Point(left_sonar_position[0], left_sonar_position[1])
+    c = robot.driver.find_corners(robot.driver.x,robot.driver.y,robotAngle[0])
+    Bl = c[2]
+    Br = c[3]
 
-    v = Br - Bl
-    direction_vector = v / np.linalg.norm(v)
-    right_sonar_position = Bl + direction_vector * 3 
-    right_sonar_position = Point(right_sonar_position[0], right_sonar_position[1])
-
-    left_dist = robot.driver.dist_to_box(left_sonar_position, robot.driver.heading+180)
-    right_dist = robot.driver.dist_to_box(right_sonar_position, robot.driver.heading+180)    
-    
+    left_dist = robot.driver.dist_to_box(Bl, robot.driver.heading+180)
+    right_dist = robot.driver.dist_to_box(Br, robot.driver.heading+180)    
     return min(left_dist,right_dist)
 def echo():
     left,right=robot.sonars()
@@ -47,14 +39,19 @@ def echo():
     print(distances)
 
 def forward(pixels):    
-    if pixels > space()-5:
+    if pixels < space()-5:
         new_px = pixels
         
     else: 
         new_px = (space()-5)
     robot.motors(1,1,new_px/60)  
 def back(px):
-    robot.motors(-1,-1,px/60)
+    if px < backSpace()-5:
+        new_px = px
+        
+    else: 
+        new_px = (backSpace()-5)
+    robot.motors(-1,-1,new_px/60)  
 
 def turnLeft(theta):
     ratio = 58.8
