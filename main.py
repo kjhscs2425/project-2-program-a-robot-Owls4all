@@ -23,7 +23,7 @@ boxWidth = 660
 boxHeight = 410
 
 def space():
-    return min(robot.sonars())
+    return min(robot.sonars())-30
 def backSpace(): #Credit to Dr. EB for this- I took most of the code for it from the simulator.
     c = robot.driver.find_corners(robot.driver.x,robot.driver.y,robotAngle[0])
     Bl = c[2]
@@ -31,7 +31,7 @@ def backSpace(): #Credit to Dr. EB for this- I took most of the code for it from
 
     left_dist = robot.driver.dist_to_box(Bl, robot.driver.heading+180)
     right_dist = robot.driver.dist_to_box(Br, robot.driver.heading+180)    
-    return min(left_dist,right_dist)
+    return min(left_dist,right_dist)-30
 def echo():
     left,right=robot.sonars()
     distances[0]=left
@@ -39,18 +39,18 @@ def echo():
     print(distances)
 
 def forward(pixels):    
-    if pixels < space()-5:
+    if pixels < space():
         new_px = pixels
         
     else: 
-        new_px = (space()-5)
+        new_px = (space())
     robot.motors(1,1,new_px/60)  
 def back(px):
-    if px < backSpace()-5:
+    if px < backSpace():
         new_px = px
         
     else: 
-        new_px = (backSpace()-5)
+        new_px = (backSpace())
     robot.motors(-1,-1,new_px/60)  
 
 def turnLeft(theta):
@@ -80,6 +80,13 @@ def findBearings():
     faceInDirection(oldFacing)
     return oldFacing,distanceToRight,distanceToTop
 
+def bounce():
+    d = space()
+    forward(d)
+    while d>=10:
+        d*=0.75
+        back(d)
+        forward(d)
 danceCommands = ['run','step','add','delete','print','restart','done']
 
 def center():
@@ -118,6 +125,8 @@ def doAThing(thing,value):
         faceInDirection(value)
     if thing == 'center':
         center()
+    if thing == 'bounce':
+        bounce()
 
 def dance(whichOne,startPoint=0):
     progress = startPoint
@@ -219,7 +228,6 @@ while Athena == 'the best':
             if distance >= space():
                 print("That's too far! the robot will hit the edge!")
         forward(distance)
-        echo()
     elif command == 'back':
         d = float(ask('How far?'))
         back(d)
@@ -236,7 +244,7 @@ while Athena == 'the best':
         else:
            dance(chosenOne)      
     elif command == 'bounce':
-        print("I haven't prepared this yet")
+        bounce()
     elif command == 'center':
         center()
     elif command == 'choreograph':
