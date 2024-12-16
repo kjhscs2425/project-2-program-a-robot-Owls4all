@@ -65,11 +65,16 @@ def turnRight(theta):
 
 def faceInDirection(direction):
     x = robotAngle[0]
-    if 180+direction>x>direction:
-        turnRight(x-direction)
-    else:
-        turnLeft(180-(direction-x))
-    robotAngle[0] = direction
+    direction = direction%360
+    angleToTurn = direction-x
+    #pretend x is 0
+    if direction-x >=0 and direction-x <=180:
+        turnLeft(angleToTurn)
+    elif direction-x >=180:
+        angleToTurn = 360-(direction-x)
+    if angleToTurn <0:
+        turnRight(abs(angleToTurn))
+    robotAngle[0]=direction
 def findBearings():
     
     oldFacing = robotAngle[0]
@@ -90,6 +95,8 @@ def bounce():
 danceCommands = ['run','step','add','delete','print','restart','done']
 
 def center():
+        if space() <50:
+            back(50-space())
     #--------------vertical------------------#
         faceInDirection(90)
         left,right=robot.sonars()
@@ -100,9 +107,7 @@ def center():
         elif distances[0] <110.27169461830995:
             back(110.27169461830995-distances[0])  
     #-------------horizontal-----------------#
-       # ask("The bot thinks it's facing up. Is it?")
         faceInDirection(0)
-       # ask("The bot thinks it's facing right. Is it?") #(these were used for debugging)
         left,right=robot.sonars()
         distances[0]=left
         distances[1]=right
@@ -217,6 +222,7 @@ Other commands:
 ===============================================================
 '''
 
+'''
 while Athena == 'the best':
     command = ask('what do you want the bot to do?\n'+str(commandsBasic)+'\n'+str(commandsAdvanced))
     if command == 'help':
@@ -264,6 +270,17 @@ while Athena == 'the best':
         print("The secret commands are:\n"+str(commandsSecret))
     else:
         print("I don't know what that means... \n try 'help' for a list of commands.")
+'''
 
-
+#'''
+debuggging = True
+while debuggging:
+    angle = float(ask('What angle to face?'))
+    print(f'The robot thinks it\'s facing {robotAngle[0]} degrees')
+    faceInDirection(angle)
+    print(f'The robot thinks it\'s facing {robotAngle[0]} degrees')
+    quit = ask('done debugging?')
+    if searchList(quit,YesList):
+        debuggging = False
+#'''
 # - - End - - #
