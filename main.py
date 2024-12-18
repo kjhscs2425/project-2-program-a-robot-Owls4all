@@ -25,13 +25,9 @@ boxHeight = 410
 def space():
     return min(robot.sonars())-30
 def backSpace(): #Credit to Dr. EB for this- I took most of the code for it from the simulator.
-    c = robot.driver.find_corners(robot.driver.x,robot.driver.y,robotAngle[0])
-    Bl = c[2]
-    Br = c[3]
-
-    left_dist = robot.driver.dist_to_box(Bl, robot.driver.heading+180)
-    right_dist = robot.driver.dist_to_box(Br, robot.driver.heading+180)    
-    return min(left_dist,right_dist)-30
+    x=robot.x
+    y=robot.y
+    return min()-30
 def echo():
     left,right=robot.sonars()
     distances[0]=left
@@ -222,7 +218,7 @@ Other commands:
 ===============================================================
 '''
 
-'''
+#'''
 while Athena == 'the best':
     command = ask('what do you want the bot to do?\n'+str(commandsBasic)+'\n'+str(commandsAdvanced))
     if command == 'help':
@@ -270,9 +266,9 @@ while Athena == 'the best':
         print("The secret commands are:\n"+str(commandsSecret))
     else:
         print("I don't know what that means... \n try 'help' for a list of commands.")
-'''
-
 #'''
+
+'''
 debuggging = True
 while debuggging:
     angle = float(ask('What angle to face?'))
@@ -282,5 +278,5 @@ while debuggging:
     quit = ask('done debugging?')
     if searchList(quit,YesList):
         debuggging = False
-#'''
+'''
 # - - End - - #
