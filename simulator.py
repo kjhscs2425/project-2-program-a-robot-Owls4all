@@ -189,8 +189,8 @@ class SimulatorDriver:
         # we can calculate the distance (in the direction of the heading) to each box edge.
         
         # let N, W, S, E be the distances to the walls in the four cardinal directions
-        S = sonar_position.y
-        N = self.box_height - S
+        N = sonar_position.y
+        S = self.box_height - N
         W = sonar_position.x
         E = self.box_width - W
         # let T, R, B, L be the distances to the walls in the direction the robot is pointing
@@ -204,7 +204,7 @@ class SimulatorDriver:
         elif h == 270:
             return S
         else:
-            if sin(h) > 0:
+            if sin(h) < 0:
                 # np.sin(h) * T = N
                 T = N / sin(h)
                 dist_to_horizontal_line = T

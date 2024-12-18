@@ -24,10 +24,19 @@ boxHeight = 410
 
 def space():
     return min(robot.sonars())-30
-def backSpace(): #Credit to Dr. EB for this- I took most of the code for it from the simulator.
-    x=robot.x
-    y=robot.y
-    return min()-30
+def backSpace(): #Not currently operational
+    x=robot.driver.x
+    y=robot.driver.y
+    r=np.sqrt(800)
+    h=(robotAngle[0]+180)%360
+
+    W=x    
+    E=boxWidth-x
+    N=y  
+    S=boxHeight-y
+
+    
+    return 500-30#not accurate but I will deal with it later
 def echo():
     left,right=robot.sonars()
     distances[0]=left
@@ -35,11 +44,11 @@ def echo():
     print(distances)
 
 def forward(pixels):    
-    if pixels < space():
-        new_px = pixels
+    #if pixels < space():
+    new_px = pixels
         
-    else: 
-        new_px = (space())
+   # else: 
+    #    new_px = (space())
     robot.motors(1,1,new_px/60)  
 def back(px):
     if px < backSpace():
@@ -220,15 +229,12 @@ Other commands:
 
 #'''
 while Athena == 'the best':
+    print(f'X:{robot.driver.x}, Y:{robot.driver.y}')
     command = ask('what do you want the bot to do?\n'+str(commandsBasic)+'\n'+str(commandsAdvanced))
     if command == 'help':
         print(helpMenu)
     elif command == 'forward':
-        distance = 10000
-        while distance >= space():
-            distance = float(ask('How far?'))
-            if distance >= space():
-                print("That's too far! the robot will hit the edge!")
+        distance = float(ask('How far?'))
         forward(distance)
     elif command == 'back':
         d = float(ask('How far?'))
