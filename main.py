@@ -31,12 +31,14 @@ def calibrate():
     print(f'Initial angle {startAngle} degrees')
     robot.motors(1,-1,1)
     left,right = robot.sonars()
-    endAngle = makeDegrees(np.arctan((left-right)/sonarsDisplacement))
+    endAngle = np.abs(makeDegrees(np.arctan((left-right)/sonarsDisplacement)))
     angleDif = endAngle-startAngle
     print(f'turned {angleDif} degrees in 1 second')
 
+    print(f'endAngle:{endAngle}')
+    
     angleRatio = 1/angleDif
-    ratios[1]=angleRatio
+    ratios[1]=(angleRatio)
     print("Resetting angle...")
     
     robot.motors(-1,1,endAngle*ratios[1])
@@ -94,6 +96,8 @@ def back(px):
     robot.motors(-1,-1,new_px*ratios[0])  
 
 def turnLeft(theta):
+    print(theta)
+    print(theta*ratios[1])
     robot.motors(1,-1,theta*ratios[1])
     robotAngle[0]= (robotAngle[0] + theta) % 360
 def turnRight(theta):
