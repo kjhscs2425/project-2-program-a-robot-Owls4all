@@ -56,7 +56,7 @@ class Point:
         self.y = y
 
     def __repr__(self):
-        return f"(x={self.x}, y={self.y})"
+        return f"(x={round(self.x)}, y={round(self.y)})"
     
     def to_vector(self):
         rho, phi = cart2pol(self.x, self.y)
@@ -76,17 +76,17 @@ class Vector:
         self.r = r
         self.theta = theta
     def __repr__(self):
-        return f"(r={self.r}, theta={self.theta})"
+        return f"(r={round(self.r)}, theta={round(self.theta)})"
     def to_point(self):
         x = self.r * cos(self.theta)
         y = self.r * sin(self.theta)
-        return Point(x, y)
+        return Point(round(x), round(y))
         
 
 # Simulator Driver
 class SimulatorDriver:
     def __init__(self):
-        self.origin = Point(300, 200)
+        self.origin = Point(0, 0)#Point(300, 200)
         self.x = self.origin.x
         self.y = self.origin.y
         self.heading = 0 # pointing to the right
@@ -128,7 +128,7 @@ class SimulatorDriver:
         # back corner is 90 more degrees counter-clockwise
         back_left_corner = Point(x, y) + Vector(half_diag, heading + 45 + 90).to_point()
         back_right_corner = Point(x, y) + Vector(half_diag, heading + 45 + 90 + 90).to_point()
-        front_right_corner = Point(x, y) + Vector(half_diag, heading - 45).to_point()
+        front_right_corner = Point(x, y) + Vector(half_diag, heading + 45 + 90 + 90 + 90).to_point()
 
         return [front_right_corner, front_left_corner, back_left_corner, back_right_corner]
 
@@ -173,7 +173,7 @@ class SimulatorDriver:
                 else:
                     speed = right * 1
                     self.x += speed * np.cos(np.radians(self.heading))
-                    self.y -= speed * np.sin(np.radians(self.heading))
+                    self.y += speed * np.sin(np.radians(self.heading))
             else:
                 raise Exception("Ooops! Dr. Ebee didn't write code that let's you use those numbers as input to the `motors` function. If you *really* want those numbers, schedule some time on her calendar to help her implement that change!!")
 
@@ -189,10 +189,10 @@ class SimulatorDriver:
         # we can calculate the distance (in the direction of the heading) to each box edge.
         
         # let N, W, S, E be the distances to the walls in the four cardinal directions
-        N = sonar_position.y
-        S = self.box_height - N
-        W = sonar_position.x
-        E = self.box_width - W
+        N = self.box_height / 2 - sonar_position.y#sonar_position.y
+        S = sonar_position.y + self.box_height / 2#self.box_height - S
+        W = sonar_position.x + self.box_width / 2#sonar_position.x
+        E = self.box_width / 2 - sonar_position.x#self.box_width - W
         # let T, R, B, L be the distances to the walls in the direction the robot is pointing
         # h is the angle between the heading direction vector and the bottom/top wall
         if h == 0:
@@ -204,46 +204,49 @@ class SimulatorDriver:
         elif h == 270:
             return S
         else:
-            if sin(h) < 0:
+            if sin(h) > 0:
                 # np.sin(h) * T = N
                 T = N / sin(h)
                 dist_to_horizontal_line = T
                 if debug:
-                    print(f"dist to top: {T}")
+                    print(f"dist to top: {round(T)}")
             else:
                 B = S / -sin(h)
                 dist_to_horizontal_line = B
                 if debug:
-                    print(f"dist to bottom: {B}")
+                    print(f"dist to bottom: {round(B)}")
             if cos(h) > 0:
                 R = E / cos(h)
                 dist_to_vertical_line = R
                 if debug:
-                    print(f"dist to right wall: {R}")
+                    print(f"dist to right wall: {round(R)}")
             else:
                 L = W / -cos(h)
                 dist_to_vertical_line = L
                 if debug:
-                    print(f"dist to left wall: {L}")
+                    print(f"dist to left wall: {round(L)}")
             return min(dist_to_horizontal_line, dist_to_vertical_line)
 
     def sonars(self):
         corners = self.find_corners(self.x, self.y, self.heading)
         left_front_corner = corners[1].to_array()
         right_front_corner = corners[0].to_array()
-        # print(f"{right_front_corner=}")
-        # print(f"{left_front_corner=}")
+        if debug:
+            print(f"{right_front_corner=}")
+            print(f"{left_front_corner=}")
         v = right_front_corner - left_front_corner
         direction_vector = v / np.linalg.norm(v)
         left_sonar_position = left_front_corner + direction_vector * 3
         left_sonar_position = Point(left_sonar_position[0], left_sonar_position[1])
-        # print(f"{left_sonar_position=}")
+        if debug:
+            print(f"{left_sonar_position=}")
 
         v = left_front_corner - right_front_corner
         direction_vector = v / np.linalg.norm(v)
         right_sonar_position = right_front_corner + direction_vector * 3 
         right_sonar_position = Point(right_sonar_position[0], right_sonar_position[1])
-        # print(f"{right_sonar_position=}")
+        if debug:
+            print(f"{right_sonar_position=}")
 
         # draw a line between the front corners
         # sonar positions are 3cm in from the front corners
@@ -262,14 +265,16 @@ class SimulatorDriver:
         global frame
         frame += 1
         if debug and frame % 100 == 0:
-            print(self.heading, np.cos(np.radians(self.heading)))
+            print(f"heading: {self.heading}, cosine: {np.cos(np.radians(self.heading))}")
         if np.cos(np.radians(self.heading)) >= 0:
             self.img = pygame.transform.rotate(self.img_right, self.heading + 90)
         else:
             self.img = pygame.transform.rotate(self.img_left, self.heading - 90)
 
         rect = self.img.get_rect()
-        rect.center = int(self.x), int(self.y)
+        x_pixels = self.x + self.box_width /2
+        y_pixels = -self.y + self.box_height /2
+        rect.center = int(x_pixels), int(y_pixels)
         self.screen.blit(self.img, rect)
 
         # Update the display
@@ -288,11 +293,11 @@ class SimulatorDriver:
     def start_simulation(self):
         # Initialize the Pygame window
         pygame.init()
-        self.screen = pygame.display.set_mode((600, 400))
+        self.screen = pygame.display.set_mode((self.box_width, self.box_height))
         pygame.display.set_caption("Robot Simulator")
         self.render()
 
-mode = 's'#input("Do you want to run the real robot (r) or the simulator (s)?")
+mode = input("Do you want to run the real robot (r) or the simulator (s)?")
 if mode == "r":
     from robot import RealRobotDriver
     robot = Robot(use_simulator=False)
