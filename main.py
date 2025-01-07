@@ -19,9 +19,43 @@ dance2Values = []
 dance3Steps = []
 dance3Values = []
 
+sonarsDisplacement = 20 # the distance between the sonar sensors
 boxWidth = 660
 boxHeight = 410
+ratios = [0.016666666666666666,0.012018542928131136] #[seconds per pixel, #seconds per degree]
 
+def calibrate():
+    print('Calibrating angle...')
+    left,right = robot.sonars()
+    startAngle = makeDegrees(np.arctan((left-right)/sonarsDisplacement))
+    print(f'Initial angle {startAngle} degrees')
+    robot.motors(1,-1,1)
+    left,right = robot.sonars()
+    endAngle = makeDegrees(np.arctan((left-right)/sonarsDisplacement))
+    angleDif = endAngle-startAngle
+    print(f'turned {angleDif} degrees in 1 second')
+    angleRatio = 1/angleDif
+
+    print("Resetting angle...")
+    
+    robot.motors(-1,1,endAngle*ratios[1])
+    print('Calibrating speed...')
+    left,right = robot.sonars()
+    robot.motors(1,1,1)
+    newLeft,newRight = robot.sonars()
+    dif = abs(newLeft-left)
+    print(f'traveled {dif} in 1 second.')
+    print('Resetting position...')
+    robot.motors(-1,-1,1)
+    ratio = 1/dif
+    
+    ratios[0]=ratio
+    ratios[1]=angleRatio
+
+    
+
+    print('Calibration complete')
+    print(ratios)
 def space():
     return min(robot.sonars())-30
 def backSpace(): #Not currently operational
@@ -49,23 +83,21 @@ def forward(pixels):
         
    # else: 
     #    new_px = (space())
-    robot.motors(1,1,new_px/60)  
+    robot.motors(1,1,new_px*ratios[0])  
 def back(px):
-    if px < backSpace():
-        new_px = px
+    #if px < backSpace():
+    new_px = px
         
-    else: 
-        new_px = (backSpace())
-    robot.motors(-1,-1,new_px/60)  
+    #else: 
+       # new_px = (backSpace())
+    robot.motors(-1,-1,new_px*ratios[0])  
 
 def turnLeft(theta):
-    ratio = 58.8
-    robot.motors(1,-1,theta/ratio)
+    robot.motors(1,-1,theta*ratios[1])
     robotAngle[0]= (robotAngle[0] + theta) % 360
 def turnRight(theta):
-    ratio = 58.8
-    # 1.5306122449 seconds for 90 degrees
-    robot.motors(-1,1,theta/ratio)
+   
+    robot.motors(-1,1,theta*ratios[1])
     robotAngle[0]= (robotAngle[0] - theta) % 360
 
 def faceInDirection(direction):
@@ -89,6 +121,7 @@ def findBearings():
     distanceToTop = space()
     faceInDirection(oldFacing)
     return oldFacing,distanceToRight,distanceToTop
+
 
 def bounce():
     d = space()
@@ -145,15 +178,15 @@ def dance(whichOne,startPoint=0):
             doAThing(defaultSteps[progress],defaultValues[progress])
             progress +=1
     elif whichOne == '1':
-        while progress < len(defaultSteps):
+        while progress < len(dance1Steps):
             doAThing(dance1Steps[progress],dance1Values[progress])
             progress +=1
     elif whichOne == '2':
-        while progress < len(defaultSteps):
+        while progress < len(dance2Steps):
             doAThing(dance2Steps[progress],dance2Values[progress])
             progress +=1
     elif whichOne == '3':
-        while progress < len(defaultSteps):
+        while progress < len(dance3Steps):
             doAThing(dance2Steps[progress],dance2Values[progress])
             progress +=1
 
@@ -226,8 +259,15 @@ Other commands:
         repeating until it goes less than 10 pixels.
 ===============================================================
 '''
+#Setting up shortcuts
+face = faceInDirection
+l = turnLeft
+r = turnRight
+fd = forward
 
-#'''
+#calibrate()
+
+'''
 while Athena == 'the best':
     print(f'X:{robot.driver.x}, Y:{robot.driver.y}')
     command = ask('what do you want the bot to do?\n'+str(commandsBasic)+'\n'+str(commandsAdvanced))
@@ -272,17 +312,25 @@ while Athena == 'the best':
         print("The secret commands are:\n"+str(commandsSecret))
     else:
         print("I don't know what that means... \n try 'help' for a list of commands.")
-#'''
-
 '''
+
+#'''
 debuggging = True
 while debuggging:
-    angle = float(ask('What angle to face?'))
-    print(f'The robot thinks it\'s facing {robotAngle[0]} degrees')
-    faceInDirection(angle)
-    print(f'The robot thinks it\'s facing {robotAngle[0]} degrees')
+    print(sonarsDisplacement)
+    calibrate()
+    go = ask('ready to turn left?')
+    if searchList(go,YesList):
+        turnLeft(90)
+    greaterLesser = ask('did the robot turn too far or not far enough?')
+    if greaterLesser == 'too far': #theta too big --> d too small
+        sonarsDisplacement += 0.1
+    if greaterLesser == 'not far enough': # theta too small --> d too big
+        sonarsDisplacement -= 0.1
+    turnRight(90)
     quit = ask('done debugging?')
     if searchList(quit,YesList):
         debuggging = False
-'''
+#'''
+
 # - - End - - #
