@@ -34,8 +34,9 @@ def calibrate():
     endAngle = makeDegrees(np.arctan((left-right)/sonarsDisplacement))
     angleDif = endAngle-startAngle
     print(f'turned {angleDif} degrees in 1 second')
-    angleRatio = 1/angleDif
 
+    angleRatio = 1/angleDif
+    ratios[1]=angleRatio
     print("Resetting angle...")
     
     robot.motors(-1,1,endAngle*ratios[1])
@@ -47,10 +48,10 @@ def calibrate():
     print(f'traveled {dif} in 1 second.')
     print('Resetting position...')
     robot.motors(-1,-1,1)
+
     ratio = 1/dif
-    
     ratios[0]=ratio
-    ratios[1]=angleRatio
+    
 
     
 
@@ -265,9 +266,9 @@ l = turnLeft
 r = turnRight
 fd = forward
 
-#calibrate()
+calibrate()
 
-'''
+#'''
 while Athena == 'the best':
     print(f'X:{robot.driver.x}, Y:{robot.driver.y}')
     command = ask('what do you want the bot to do?\n'+str(commandsBasic)+'\n'+str(commandsAdvanced))
@@ -312,9 +313,9 @@ while Athena == 'the best':
         print("The secret commands are:\n"+str(commandsSecret))
     else:
         print("I don't know what that means... \n try 'help' for a list of commands.")
-'''
-
 #'''
+
+'''
 debuggging = True
 while debuggging:
     print(sonarsDisplacement)
@@ -331,6 +332,6 @@ while debuggging:
     quit = ask('done debugging?')
     if searchList(quit,YesList):
         debuggging = False
-#'''
+'''
 
 # - - End - - #
