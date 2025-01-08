@@ -19,23 +19,27 @@ dance2Values = []
 dance3Steps = []
 dance3Values = []
 
-sonarsDisplacement = 20 # the distance between the sonar sensors
+#SmallestTooBig : 72
+#BiggestTooSmall : 68
+sonarsD = 70.5 # the distance between the sonar sensors
 boxWidth = 660
 boxHeight = 410
 ratios = [0.016666666666666666,0.012018542928131136] #[seconds per pixel, #seconds per degree]
 
-def calibrate():
+def calibrate(sonarsDisplacement):
     print('Calibrating angle...')
     left,right = robot.sonars()
-    startAngle = makeDegrees(np.arctan((left-right)/sonarsDisplacement))
+    delta = right-left
+    startAngle = np.abs(makeDegrees(np.arctan(delta/sonarsDisplacement)))
     print(f'Initial angle {startAngle} degrees')
     robot.motors(1,-1,1)
     left,right = robot.sonars()
-    endAngle = np.abs(makeDegrees(np.arctan((left-right)/sonarsDisplacement)))
+    delta = right-left
+    endAngle = np.abs(makeDegrees(np.arctan(delta/sonarsDisplacement)))
     angleDif = endAngle-startAngle
     print(f'turned {angleDif} degrees in 1 second')
 
-    print(f'endAngle:{endAngle}')
+    print(f'endAngle:{endAngle} degrees')
     
     angleRatio = 1/angleDif
     ratios[1]=(angleRatio)
@@ -270,7 +274,7 @@ l = turnLeft
 r = turnRight
 fd = forward
 
-calibrate()
+calibrate(sonarsD)
 
 #'''
 while Athena == 'the best':
@@ -321,17 +325,18 @@ while Athena == 'the best':
 
 '''
 debuggging = True
+newTry = sonarsD
 while debuggging:
-    print(sonarsDisplacement)
-    calibrate()
+    print(newTry)
+    calibrate(newTry)
     go = ask('ready to turn left?')
     if searchList(go,YesList):
         turnLeft(90)
-    greaterLesser = ask('did the robot turn too far or not far enough?')
-    if greaterLesser == 'too far': #theta too big --> d too small
-        sonarsDisplacement += 0.1
-    if greaterLesser == 'not far enough': # theta too small --> d too big
-        sonarsDisplacement -= 0.1
+    left,right = robot.sonars()
+    delta = right-left
+    tryAngle = np.abs(makeDegrees(np.arctan(delta/newTry)))
+    print(f'it tried to turn 90° but is facing {tryAngle}°')
+    newTry = float(ask('new number to try?'))
     turnRight(90)
     quit = ask('done debugging?')
     if searchList(quit,YesList):
